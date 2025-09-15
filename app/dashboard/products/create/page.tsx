@@ -182,8 +182,10 @@ export default function ProductCreateRoute() {
                         onClick={() => handleDelete(index)}
                         type="button"
                         className="absolute -top-3 -right-3 bg-red-500 p-2 rounded-lg text-white"
-                      >.
+                      >
                         <XIcon className="w-3 h-3" />
+                          <span className="sr-only">Delete</span>
+
                       </button>
                     </div>
                   ))}

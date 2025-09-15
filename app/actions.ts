@@ -117,11 +117,20 @@ export async function createBanner(prevState: any, formData: FormData) {
     return submission.reply();
   }
 
-  await prisma.banner.create({
-    data: {
+  const urls = submission.value.imageString
+    .split(",")
+    .map((u: string) => u.trim())
+    .filter((u: string) => u.length > 0);
+
+  if (urls.length === 0) {
+    return submission.reply();
+  }
+
+  await prisma.banner.createMany({
+    data: urls.map((url: string) => ({
       title: submission.value.title,
-      imageString: submission.value.imageString,
-    },
+      imageString: url,
+    })),
   });
 
   redirect("/dashboard/banner");

@@ -17,15 +17,15 @@ import { parseWithZod } from "@conform-to/zod";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { useFormState } from "react-dom";
 import { SubmitButton } from "@/components/SubmitButtons";
 import { bannerSchema } from "@/lib/zodSchemas";
 import { UploadDropzone } from "@/lib/uploadthing";
 
 export default function BannerRoute() {
-  const [image, setImages] = useState<string | undefined>(undefined);
-  const [lastResult, action] = useFormState(createBanner, undefined);
+  const [images, setImages] = useState<string[]>([]);
+  const [lastResult, action] = useActionState(createBanner, undefined);
 
   const [form, fields] = useForm({
     lastResult,
@@ -69,26 +69,39 @@ export default function BannerRoute() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Label>Image</Label>
+              <Label>Images</Label>
               <input
                 type="hidden"
-                value={image}
+                value={images.join(",")}
                 key={fields.imageString.key}
                 name={fields.imageString.name}
                 defaultValue={fields.imageString.initialValue}
               />
-              {image !== undefined ? (
-                <Image
-                  src={image}
-                  alt="Product Image"
-                  width={200}
-                  height={200}
-                  className="w-[200px] h-[200px] object-cover border rounded-lg"
-                />
+              {images.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {images.map((img, idx) => (
+                      <Image
+                        key={idx}
+                        src={img}
+                        alt={`Banner image ${idx + 1}`}
+                        width={200}
+                        height={200}
+                        className="w-[200px] h-[200px] object-cover border rounded-lg"
+                      />
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" onClick={() => setImages([])}>
+                      Clear Images
+                    </Button>
+                  </div>
+                </>
               ) : (
                 <UploadDropzone
                   onClientUploadComplete={(res) => {
-                    setImages(res[0].url);
+                    const urls = res.map((r) => r.url);
+                    setImages(urls);
                   }}
                   onUploadError={() => {
                     alert("Something went wrong");
