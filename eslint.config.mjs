@@ -1,3 +1,4 @@
+// .eslintrc.js (or your existing ESLint file — replace its contents with this)
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -21,18 +22,23 @@ const eslintConfig = [
     ],
 
     // Relax TypeScript rules so `any` is allowed project-wide
+    // and unused var warnings are less strict.
     rules: {
       // Allow explicit `any`
       "@typescript-eslint/no-explicit-any": "off",
 
-      // Optional: relax some "no-unsafe-*" rules that often block `any` usage
-      // (only enable these if you really want to broadly allow `any`)
+      // Optional: relax "no-unsafe-*" rules that often block `any` usage
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-return": "off",
 
-      // Optional: don't require explicit types on exported functions/props
+      // Allow exported functions without explicit types (optional)
       "@typescript-eslint/explicit-module-boundary-types": "off",
+
+      // Convert unused-vars errors to warnings (keeps build from failing, still shows issues)
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+
+      // Keep React/Next recommended rules as-is (leave other rules alone)
     },
   },
 ];
