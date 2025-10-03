@@ -161,7 +161,7 @@ export async function addItem(productId: string) {
     return redirect("/");
   }
 
-  let cart: Cart | null = await redis.get(`cart-${user.id}`);
+  const cart: Cart | null = await redis.get(`cart-${user.id}`);
 
   const selectedProduct = await prisma.product.findUnique({
     select: {
@@ -231,7 +231,7 @@ export async function delItem(formData: FormData) {
 
   const productId = formData.get("productId");
 
-  let cart: Cart | null = await redis.get(`cart-${user.id}`);
+  const cart: Cart | null = await redis.get(`cart-${user.id}`);
 
   if (cart && cart.items) {
     const updateCart: Cart = {
@@ -253,6 +253,6 @@ export async function checkOut() {
     return redirect("/");
   }
 
-  let cart: Cart | null = await redis.get(`cart-${user.id}`);
+  const cart: Cart | null = await redis.get(`cart-${user.id}`);
 
 }
